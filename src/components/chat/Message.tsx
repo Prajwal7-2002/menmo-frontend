@@ -11,6 +11,7 @@ import {
   ExternalLink,
   Globe,
   Lightbulb,
+  MessageCircle,
   RotateCw,
   ThumbsDown,
   ThumbsUp,
@@ -21,7 +22,7 @@ export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
-  meta?: ChatResponse; // only for answers received in this session
+  meta?: ChatResponse; // assistant answers: source, tone, sources, query id (also restored from history)
   feedback?: "up" | "down";
   error?: boolean;
   retryText?: string;
@@ -32,7 +33,10 @@ const SOURCE_LABEL: Record<string, { label: string; icon: typeof Globe; classNam
   web: { label: "From the web", icon: Globe, className: "bg-sky-500/10 text-sky-600 dark:text-sky-400" },
   llm: { label: "General knowledge", icon: Lightbulb, className: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
   memory: { label: "From memory", icon: Brain, className: "bg-ok/10 text-ok" },
+  chat: { label: "Conversation", icon: MessageCircle, className: "bg-surface-2 text-muted" },
 };
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** Turn "[2]" into a link the custom renderer below recognises. */
 function linkCitations(text: string, count: number, id: string) {
@@ -152,12 +156,23 @@ export function AssistantMessage({
 
   return (
     <div className="max-w-full">
-      {badge && (
-        <div className="mb-1.5 flex flex-wrap items-center gap-2 text-xs">
-          <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ${badge.className}`}>
-            <badge.icon className="size-3" /> {badge.label}
-          </span>
-          {meta?.tone && meta.tone !== "neutral" && <span className="text-muted">tone: {meta.tone}</span>}
+      {meta && (
+        <div className="mb-1.5 flex flex-wrap items-center gap-1.5 text-xs" aria-label="Answer details">
+          {badge && (
+            <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ${badge.className}`}>
+              <badge.icon className="size-3" /> {badge.label}
+            </span>
+          )}
+          {meta.tone && (
+            <span className="rounded-full border border-border px-2 py-0.5 text-muted" title="Tone of this answer">
+              Tone · {capitalize(meta.tone)}
+            </span>
+          )}
+          {meta.verbosity && meta.verbosity !== "normal" && (
+            <span className="rounded-full border border-border px-2 py-0.5 text-muted" title="Answer length">
+              {capitalize(meta.verbosity)}
+            </span>
+          )}
         </div>
       )}
 
@@ -203,7 +218,10 @@ export function AssistantMessage({
             </button>
           )}
           {meta.query_id && (
-            <span className="ml-auto inline-flex items-center gap-0.5">
+            <span className="ml-auto inline-flex items-center gap-1">
+              <span className="mr-0.5">
+                {message.feedback === "up" ? "Marked helpful" : message.feedback === "down" ? "Marked not helpful" : "Helpful?"}
+              </span>
               {(["up", "down"] as const).map((v) => {
                 const Icon = v === "up" ? ThumbsUp : ThumbsDown;
                 const chosen = message.feedback === v;
@@ -213,11 +231,15 @@ export function AssistantMessage({
                     onClick={() => onFeedback(message.id, v)}
                     disabled={!!message.feedback}
                     aria-label={v === "up" ? "Helpful" : "Not helpful"}
-                    className={`rounded-md p-1.5 transition hover:bg-surface-2 hover:text-fg disabled:cursor-default disabled:hover:bg-transparent ${
-                      chosen ? "text-accent" : ""
+                    title={v === "up" ? "Helpful" : "Not helpful"}
+                    aria-pressed={chosen}
+                    className={`rounded-md border p-1.5 transition disabled:cursor-default ${
+                      chosen
+                        ? "border-accent/40 bg-accent-soft text-accent"
+                        : "border-border hover:border-accent/40 hover:text-fg disabled:hover:border-border"
                     } ${message.feedback && !chosen ? "opacity-30" : ""}`}
                   >
-                    <Icon className="size-3.5" fill={chosen ? "currentColor" : "none"} />
+                    <Icon className="size-4" fill={chosen ? "currentColor" : "none"} />
                   </button>
                 );
               })}

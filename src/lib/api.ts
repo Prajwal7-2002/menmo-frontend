@@ -43,6 +43,8 @@ export interface Conversation {
 export interface HistoryMessage {
   role: "user" | "assistant";
   content: string;
+  /** Saved answer details (newer messages only); feedback is the user's latest rating. */
+  meta?: ChatResponse & { feedback?: "up" | "down" | null };
 }
 
 export interface DocumentInfo {

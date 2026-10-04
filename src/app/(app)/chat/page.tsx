@@ -80,7 +80,16 @@ export default function ChatPage() {
     api
       .history(activeId)
       .then((h) => {
-        if (!cancelled) setMessages(h.map((m) => ({ id: newId(), role: m.role, content: m.content })));
+        if (!cancelled)
+          setMessages(
+            h.map((m) => ({
+              id: newId(),
+              role: m.role,
+              content: m.content,
+              meta: m.meta,
+              feedback: m.meta?.feedback ?? undefined,
+            })),
+          );
       })
       .catch((e) => {
         if (cancelled) return;
