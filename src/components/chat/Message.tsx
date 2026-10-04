@@ -42,12 +42,48 @@ function linkCitations(text: string, count: number, id: string) {
   );
 }
 
+// Same cut-offs the backend uses to decide whether documents answer the question
+// (RAG_MIN_GOOD_SIM / RAG_MIN_WEAK_SIM).
+const STRONG = 0.45;
+const PARTIAL = 0.3;
+
+/** How closely a source matches the question, 0..1, or null if unscored (e.g. web results). */
+export function relevance(chunk: Chunk): number | null {
+  if (typeof chunk.similarity === "number") return chunk.similarity;
+  // Older backends only send the hybrid ranking score
+  if (typeof chunk.score === "number" && chunk.score > 0) return chunk.score;
+  return null;
+}
+
+function RelevanceTag({ value }: { value: number }) {
+  const pct = Math.max(0, Math.min(100, Math.round(value * 100)));
+  const tier =
+    value >= STRONG
+      ? { label: "Strong", text: "text-ok", bar: "bg-ok" }
+      : value >= PARTIAL
+        ? { label: "Partial", text: "text-amber-600 dark:text-amber-400", bar: "bg-amber-500" }
+        : { label: "Weak", text: "text-muted", bar: "bg-muted" };
+  return (
+    <span
+      className="ml-auto inline-flex items-center gap-2 text-xs"
+      title="How closely this passage matches your question"
+    >
+      <span className={`font-medium ${tier.text}`}>
+        {tier.label} · {pct}%
+      </span>
+      <span className="h-1.5 w-12 overflow-hidden rounded-full bg-surface-2" aria-hidden>
+        <span className={`block h-full rounded-full ${tier.bar}`} style={{ width: `${pct}%` }} />
+      </span>
+    </span>
+  );
+}
+
 function SourceItem({ chunk, n, anchor }: { chunk: Chunk; n: number; anchor: string }) {
   const meta = chunk.meta ?? {};
   const isWeb = meta.type === "web" || (!!meta.source && meta.source.startsWith("http"));
   const title = meta.title || (isWeb ? meta.source : "Document");
   const where = [meta.page_num ? `p. ${meta.page_num}` : "", meta.section_title || ""].filter(Boolean).join(" · ");
-  const match = typeof chunk.similarity === "number" ? `${Math.round(chunk.similarity * 100)}% match` : "";
+  const score = relevance(chunk);
 
   return (
     <li id={anchor} className="scroll-mt-24 rounded-lg border border-border bg-surface p-3 text-sm target:ring-2 target:ring-accent/40">
@@ -62,7 +98,11 @@ function SourceItem({ chunk, n, anchor }: { chunk: Chunk; n: number; anchor: str
           <span className="min-w-0 truncate font-medium">{title}</span>
         )}
         {where && <span className="text-xs text-muted">{where}</span>}
-        {match && <span className="ml-auto text-xs text-muted">{match}</span>}
+        {score !== null ? (
+          <RelevanceTag value={score} />
+        ) : (
+          isWeb && <span className="ml-auto text-xs text-muted">Web result</span>
+        )}
       </div>
       <p className="line-clamp-4 whitespace-pre-line text-muted">{chunk.text}</p>
     </li>
@@ -91,6 +131,8 @@ export function AssistantMessage({
   const [showSources, setShowSources] = useState(false);
   const meta = message.meta;
   const chunks = meta?.chunks?.filter((c) => c.text) ?? [];
+  const scores = chunks.map(relevance).filter((s): s is number => s !== null);
+  const best = scores.length ? Math.max(...scores) : null;
   const badge = meta ? SOURCE_LABEL[meta.source] : undefined;
   const steps = (meta?.trace ?? []).map((t) => String(t.step)).filter(Boolean);
 
@@ -156,6 +198,7 @@ export function AssistantMessage({
               aria-expanded={showSources}
             >
               {chunks.length} source{chunks.length > 1 ? "s" : ""}
+              {best !== null && <span className="text-muted">· best {Math.round(best * 100)}% match</span>}
               <ChevronDown className={`size-3.5 transition ${showSources ? "rotate-180" : ""}`} />
             </button>
           )}
