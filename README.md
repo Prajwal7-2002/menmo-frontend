@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mnemo — frontend
 
-## Getting Started
+Web app for [Mnemo](https://huggingface.co/spaces/prajwalpujari16/mnemo-backend): upload documents and chat
+with them. Answers say where they came from (your documents, the web, general knowledge, or memory) and cite
+their sources with page numbers.
 
-First, run the development server:
+Built with Next.js (App Router, static export), TypeScript and Tailwind CSS. The site is plain static files;
+the browser talks to the backend directly, so slow answers and large uploads never hit hosting time limits.
+
+## Pages
+
+| Route | What it does |
+|---|---|
+| `/login`, `/signup` | Account access |
+| `/chat` | Conversations, document/topic scope, tone, citations, 👍/👎 feedback |
+| `/documents` | Drag-and-drop upload with progress, documents grouped by topic, delete |
+| `/analytics` | Usage and feedback summary |
+| `/settings` | Change password, tips |
+
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The backend URL comes from `NEXT_PUBLIC_API_BASE` (see `.env.example`); it defaults to the Hugging Face Space.
+To use a local backend, create `.env.local` with `NEXT_PUBLIC_API_BASE=http://localhost:8000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build & deploy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build        # writes the static site to out/
+```
 
-## Learn More
+Netlify reads `netlify.toml` (build `npm run build`, publish `out`). Connect this repo to the Netlify site and
+every push to `main` deploys. After the first deploy, set the backend's `CORS_ALLOWED_ORIGINS` secret to the
+site's URL so only this frontend can call the API.
 
-To learn more about Next.js, take a look at the following resources:
+## Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/lib/api.ts          API client: types, token refresh, errors, upload progress
+src/lib/auth.tsx        Auth state (tokens in localStorage)
+src/app/(app)/          Signed-in pages + sidebar layout
+src/components/chat/    Message rendering, composer, conversation list
+```
