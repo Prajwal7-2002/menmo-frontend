@@ -32,7 +32,7 @@ export default function SignupPage() {
   }
 
   return (
-    <AuthCard title="Create your account" subtitle="Upload documents and ask Mnemo anything about them.">
+    <AuthCard title="Create your account" subtitle="Upload documents and ask Menmo anything about them.">
       <form onSubmit={submit} className="space-y-4">
         <TextField label="Username" autoComplete="username" value={form.username} onChange={set("username")} required autoFocus />
         <TextField label="Email" type="email" autoComplete="email" value={form.email} onChange={set("email")} hint="Optional" />

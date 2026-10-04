@@ -84,7 +84,7 @@ export default function DocumentsPage() {
   }
 
   async function remove(id: string, title: string) {
-    if (!window.confirm(`Delete "${title}"? Mnemo will forget its contents.`)) return;
+    if (!window.confirm(`Delete "${title}"? Menmo will forget its contents.`)) return;
     try {
       await api.deleteDocument(id);
       toast("Document deleted");
@@ -99,7 +99,7 @@ export default function DocumentsPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-2xl font-semibold tracking-tight">Documents</h1>
-      <p className="mt-1 text-sm text-muted">Upload files for Mnemo to read. Only you can search your documents.</p>
+      <p className="mt-1 text-sm text-muted">Upload files for Menmo to read. Only you can search your documents.</p>
 
       <div
         onDragOver={(e) => {

@@ -231,7 +231,7 @@ export default function ChatPage() {
               <div className="py-12 text-center">
                 <h2 className="text-2xl font-semibold tracking-tight">What would you like to know?</h2>
                 <p className="mx-auto mt-2 max-w-md text-sm text-muted">
-                  Mnemo answers from your documents first, then the web, and remembers what you tell it.
+                  Menmo answers from your documents first, then the web, and remembers what you tell it.
                   {!hasDocs && (
                     <>
                       {" "}
@@ -288,7 +288,7 @@ export default function ChatPage() {
                 store(TONE_KEY, t);
               }}
             />
-            <p className="mt-2 text-center text-[11px] text-muted">Mnemo can make mistakes. Check important facts against the sources.</p>
+            <p className="mt-2 text-center text-[11px] text-muted">Menmo can make mistakes. Check important facts against the sources.</p>
           </div>
         </div>
       </section>

@@ -28,7 +28,7 @@ export default function AnalyticsPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
-      <p className="mt-1 text-sm text-muted">How you&apos;ve been using Mnemo.</p>
+      <p className="mt-1 text-sm text-muted">How you&apos;ve been using Menmo.</p>
 
       {error && (
         <div className="mt-6">
@@ -56,7 +56,7 @@ export default function AnalyticsPage() {
 
           <h2 className="mt-10 mb-3 text-sm font-semibold">Most asked</h2>
           {data.top_queries.length === 0 ? (
-            <p className="text-sm text-muted">Nothing yet — ask Mnemo something.</p>
+            <p className="text-sm text-muted">Nothing yet — ask Menmo something.</p>
           ) : (
             <ul className="space-y-2">
               {data.top_queries.map((q) => (

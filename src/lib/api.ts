@@ -1,7 +1,7 @@
 import { API_BASE } from "./config";
 
 // ---------------------------------------------------------------------------
-// Types (mirror the Mnemo backend responses)
+// Types (mirror the Menmo backend responses)
 // ---------------------------------------------------------------------------
 
 export type Source = "document" | "web" | "llm" | "memory" | "chat" | string;
@@ -146,7 +146,7 @@ function messageFrom(body: unknown, status: number): string {
 }
 
 const NETWORK_MESSAGE =
-  "Can't reach the Mnemo server. If it was idle it may be waking up — try again in a minute.";
+  "Can't reach the Menmo server. If it was idle it may be waking up — try again in a minute.";
 
 // ---------------------------------------------------------------------------
 // Core request with one transparent token refresh

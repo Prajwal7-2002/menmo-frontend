@@ -65,7 +65,7 @@ export default function SettingsPage() {
         <h2 className="font-semibold">Tips</h2>
         <ul className="mt-3 list-disc space-y-1.5 pl-5 text-muted">
           <li>
-            Start a message with <span className="font-medium text-fg">&ldquo;Remember that…&rdquo;</span> and Mnemo will keep it in
+            Start a message with <span className="font-medium text-fg">&ldquo;Remember that…&rdquo;</span> and Menmo will keep it in
             mind across chats.
           </li>
           <li>Pick a document in the chat box to keep answers strictly inside that file.</li>

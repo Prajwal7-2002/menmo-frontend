@@ -97,7 +97,7 @@ export function Composer({
             ))}
           </select>
         </label>
-        <label className="inline-flex items-center gap-1 text-muted" title="Reply tone (Auto lets Mnemo choose)">
+        <label className="inline-flex items-center gap-1 text-muted" title="Reply tone (Auto lets Menmo choose)">
           <Sparkles className="size-3.5" />
           <select value={tone} onChange={(e) => onTone(e.target.value as Tone)} className={selectClass} aria-label="Tone">
             {TONES.map((t) => (

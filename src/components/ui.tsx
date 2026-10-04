@@ -11,7 +11,7 @@ export function Logo({ size = 28 }: { size?: number }) {
       >
         M
       </span>
-      Mnemo
+      Menmo
     </span>
   );
 }

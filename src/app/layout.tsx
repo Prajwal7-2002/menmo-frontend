@@ -8,8 +8,8 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Mnemo",
-  description: "Chat with your documents. Mnemo answers from your files, the web, and what you've told it.",
+  title: "Menmo",
+  description: "Chat with your documents. Menmo answers from your files, the web, and what you've told it.",
 };
 
 export const viewport: Viewport = {
