@@ -1,6 +1,6 @@
 # Menmo — frontend
 
-Web app for [Menmo](https://huggingface.co/spaces/prajwalpujari16/menmo-backend): upload documents and chat
+Web app for [Menmo](https://menmo-app.netlify.app): upload documents and chat
 with them. Answers say where they came from (your documents, the web, general knowledge, or memory) and cite
 their sources with page numbers.
 
