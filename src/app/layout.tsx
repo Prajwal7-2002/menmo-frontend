@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { JetBrains_Mono, Schibsted_Grotesk } from "next/font/google";
 import { AuthProvider } from "@/lib/auth";
 import { ToastProvider } from "@/components/toast";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const uiFont = Schibsted_Grotesk({ variable: "--font-ui", subsets: ["latin"] });
+const codeFont = JetBrains_Mono({ variable: "--font-code", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Menmo",
@@ -14,14 +14,14 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f7fb" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f0f15" },
+    { media: "(prefers-color-scheme: light)", color: "#f5f7fa" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c1016" },
   ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="en" className={`${uiFont.variable} ${codeFont.variable} h-full antialiased`}>
       <body className="h-full font-sans">
         <AuthProvider>
           <ToastProvider>{children}</ToastProvider>

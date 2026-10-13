@@ -3,19 +3,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import {
-  BookOpen,
-  Brain,
-  ChevronDown,
-  CircleAlert,
-  ExternalLink,
-  Globe,
-  Lightbulb,
-  MessageCircle,
-  RotateCw,
-  ThumbsDown,
-  ThumbsUp,
-} from "lucide-react";
+import { ChevronDown, CircleAlert, ExternalLink, RotateCw, ThumbsDown, ThumbsUp } from "lucide-react";
 import type { ChatResponse, Chunk } from "@/lib/api";
 
 export interface ChatMessage {
@@ -28,15 +16,13 @@ export interface ChatMessage {
   retryText?: string;
 }
 
-const SOURCE_LABEL: Record<string, { label: string; icon: typeof Globe; className: string }> = {
-  document: { label: "From your documents", icon: BookOpen, className: "bg-accent-soft text-accent" },
-  web: { label: "From the web", icon: Globe, className: "bg-sky-500/10 text-sky-600 dark:text-sky-400" },
-  llm: { label: "General knowledge", icon: Lightbulb, className: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
-  memory: { label: "From memory", icon: Brain, className: "bg-ok/10 text-ok" },
-  chat: { label: "Conversation", icon: MessageCircle, className: "bg-surface-2 text-muted" },
+const SOURCE_LABEL: Record<string, string> = {
+  document: "Your documents",
+  web: "Web",
+  llm: "General knowledge",
+  memory: "Memory",
+  chat: "Conversation",
 };
-
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** Turn "[2]" into a link the custom renderer below recognises. */
 function linkCitations(text: string, count: number, id: string) {
@@ -63,20 +49,20 @@ function RelevanceTag({ value }: { value: number }) {
   const pct = Math.max(0, Math.min(100, Math.round(value * 100)));
   const tier =
     value >= STRONG
-      ? { label: "Strong", text: "text-ok", bar: "bg-ok" }
+      ? { label: "Strong", text: "text-fg", bar: "bg-fg" }
       : value >= PARTIAL
-        ? { label: "Partial", text: "text-amber-600 dark:text-amber-400", bar: "bg-amber-500" }
-        : { label: "Weak", text: "text-muted", bar: "bg-muted" };
+        ? { label: "Partial", text: "text-fg", bar: "bg-muted" }
+        : { label: "Weak", text: "text-muted", bar: "bg-muted/50" };
   return (
     <span
-      className="ml-auto inline-flex items-center gap-2 text-xs"
+      className="ml-auto inline-flex items-center gap-2 font-mono text-[11px]"
       title="How closely this passage matches your question"
     >
       <span className={`font-medium ${tier.text}`}>
         {tier.label} · {pct}%
       </span>
-      <span className="h-1.5 w-12 overflow-hidden rounded-full bg-surface-2" aria-hidden>
-        <span className={`block h-full rounded-full ${tier.bar}`} style={{ width: `${pct}%` }} />
+      <span className="h-1 w-12 overflow-hidden bg-surface-2" aria-hidden>
+        <span className={`block h-full ${tier.bar}`} style={{ width: `${pct}%` }} />
       </span>
     </span>
   );
@@ -90,9 +76,9 @@ function SourceItem({ chunk, n, anchor }: { chunk: Chunk; n: number; anchor: str
   const score = relevance(chunk);
 
   return (
-    <li id={anchor} className="scroll-mt-24 rounded-lg border border-border bg-surface p-3 text-sm target:ring-2 target:ring-accent/40">
+    <li id={anchor} className="scroll-mt-24 rounded border border-border bg-surface p-3 text-sm target:ring-2 target:ring-accent/40">
       <div className="mb-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-        <span className="grid size-5 shrink-0 place-items-center rounded bg-surface-2 text-xs font-semibold text-muted">{n}</span>
+        <span className="shrink-0 font-mono text-xs text-accent">[{n}]</span>
         {isWeb && meta.source ? (
           <a href={meta.source} target="_blank" rel="noreferrer" className="inline-flex min-w-0 items-center gap-1 font-medium text-accent hover:underline">
             <span className="truncate">{title}</span>
@@ -101,11 +87,11 @@ function SourceItem({ chunk, n, anchor }: { chunk: Chunk; n: number; anchor: str
         ) : (
           <span className="min-w-0 truncate font-medium">{title}</span>
         )}
-        {where && <span className="text-xs text-muted">{where}</span>}
+        {where && <span className="font-mono text-[11px] text-muted">{where}</span>}
         {score !== null ? (
           <RelevanceTag value={score} />
         ) : (
-          isWeb && <span className="ml-auto text-xs text-muted">Web result</span>
+          isWeb && <span className="ml-auto font-mono text-[11px] text-muted">web</span>
         )}
       </div>
       <p className="line-clamp-4 whitespace-pre-line text-muted">{chunk.text}</p>
@@ -115,11 +101,7 @@ function SourceItem({ chunk, n, anchor }: { chunk: Chunk; n: number; anchor: str
 
 export function UserMessage({ message }: { message: ChatMessage }) {
   return (
-    <div className="flex justify-end">
-      <div className="max-w-[85%] rounded-2xl rounded-br-md bg-gradient-to-br from-accent to-accent-2 px-4 py-2.5 whitespace-pre-wrap text-white shadow-sm">
-        {message.content}
-      </div>
-    </div>
+    <div className="rounded-md bg-surface-2 px-3 py-2 font-medium whitespace-pre-wrap text-fg">{message.content}</div>
   );
 }
 
@@ -137,12 +119,12 @@ export function AssistantMessage({
   const chunks = meta?.chunks?.filter((c) => c.text) ?? [];
   const scores = chunks.map(relevance).filter((s): s is number => s !== null);
   const best = scores.length ? Math.max(...scores) : null;
-  const badge = meta ? SOURCE_LABEL[meta.source] : undefined;
+  const origin = meta ? SOURCE_LABEL[meta.source] : undefined;
   const steps = (meta?.trace ?? []).map((t) => String(t.step)).filter(Boolean);
 
   if (message.error) {
     return (
-      <div className="flex items-start gap-2 rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 text-sm text-danger">
+      <div className="flex items-start gap-2 rounded-md border border-danger/30 bg-danger/5 px-4 py-3 text-sm text-danger">
         <CircleAlert className="mt-0.5 size-4 shrink-0" />
         <div className="flex-1">{message.content}</div>
         {message.retryText && (
@@ -157,22 +139,19 @@ export function AssistantMessage({
   return (
     <div className="max-w-full">
       {meta && (
-        <div className="mb-1.5 flex flex-wrap items-center gap-1.5 text-xs" aria-label="Answer details">
-          {badge && (
-            <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ${badge.className}`}>
-              <badge.icon className="size-3" /> {badge.label}
-            </span>
-          )}
-          {meta.tone && (
-            <span className="rounded-full border border-border px-2 py-0.5 text-muted" title="Tone of this answer">
-              Tone · {capitalize(meta.tone)}
-            </span>
-          )}
-          {meta.verbosity && meta.verbosity !== "normal" && (
-            <span className="rounded-full border border-border px-2 py-0.5 text-muted" title="Answer length">
-              {capitalize(meta.verbosity)}
-            </span>
-          )}
+        <div
+          className="mb-1.5 flex flex-wrap items-center gap-x-1.5 font-mono text-[11px] text-muted uppercase"
+          aria-label="Answer details"
+        >
+          {[
+            origin && <span key="o" className="text-fg">{origin}</span>,
+            meta.tone && <span key="t" title="Tone of this answer">tone {meta.tone}</span>,
+            meta.verbosity && meta.verbosity !== "normal" && (
+              <span key="v" title="Answer length">{meta.verbosity}</span>
+            ),
+          ]
+            .filter(Boolean)
+            .flatMap((el, i) => (i ? [<span key={`s${i}`} aria-hidden>·</span>, el] : [el]))}
         </div>
       )}
 
@@ -186,9 +165,9 @@ export function AssistantMessage({
                   <a
                     href={href}
                     onClick={() => setShowSources(true)}
-                    className="mx-0.5 inline-grid min-w-5 place-items-center rounded bg-accent-soft px-1 align-super text-[0.7em] font-semibold text-accent no-underline hover:bg-accent hover:text-white"
+                    className="mx-px font-mono text-[0.8em] text-accent no-underline hover:underline"
                   >
-                    {children}
+                    [{children}]
                   </a>
                 );
               }
@@ -213,7 +192,7 @@ export function AssistantMessage({
               aria-expanded={showSources}
             >
               {chunks.length} source{chunks.length > 1 ? "s" : ""}
-              {best !== null && <span className="text-muted">· best {Math.round(best * 100)}% match</span>}
+              {best !== null && <span className="font-mono text-[11px]">· best {Math.round(best * 100)}%</span>}
               <ChevronDown className={`size-3.5 transition ${showSources ? "rotate-180" : ""}`} />
             </button>
           )}
@@ -235,8 +214,8 @@ export function AssistantMessage({
                     aria-pressed={chosen}
                     className={`rounded-md border p-1.5 transition disabled:cursor-default ${
                       chosen
-                        ? "border-accent/40 bg-accent-soft text-accent"
-                        : "border-border hover:border-accent/40 hover:text-fg disabled:hover:border-border"
+                        ? "border-fg/40 bg-surface-2 text-fg"
+                        : "border-border hover:border-fg/40 hover:text-fg disabled:hover:border-border"
                     } ${message.feedback && !chosen ? "opacity-30" : ""}`}
                   >
                     <Icon className="size-4" fill={chosen ? "currentColor" : "none"} />

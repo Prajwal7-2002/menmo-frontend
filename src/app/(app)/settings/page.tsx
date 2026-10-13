@@ -39,7 +39,7 @@ export default function SettingsPage() {
         Signed in as <span className="font-medium text-fg">{username}</span>
       </p>
 
-      <section className="mt-8 rounded-2xl border border-border bg-surface p-6">
+      <section className="mt-8 rounded-md border border-border bg-surface p-6">
         <h2 className="font-semibold">Change password</h2>
         <form onSubmit={submit} className="mt-4 space-y-4">
           <TextField label="Current password" type="password" autoComplete="current-password" value={form.current} onChange={set("current")} required />
@@ -61,7 +61,7 @@ export default function SettingsPage() {
         </form>
       </section>
 
-      <section className="mt-6 rounded-2xl border border-border bg-surface p-6 text-sm">
+      <section className="mt-6 rounded-md border border-border bg-surface p-6 text-sm">
         <h2 className="font-semibold">Tips</h2>
         <ul className="mt-3 list-disc space-y-1.5 pl-5 text-muted">
           <li>

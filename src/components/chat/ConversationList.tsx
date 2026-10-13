@@ -35,7 +35,7 @@ export function ConversationList({
       <div className="p-3">
         <button
           onClick={onNew}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm font-medium transition hover:bg-surface-2"
+          className="flex w-full items-center justify-center gap-2 rounded border border-border bg-surface px-3 py-2 text-sm font-medium transition hover:bg-surface-2"
         >
           <Plus className="size-4" /> New chat
         </button>
@@ -47,7 +47,7 @@ export function ConversationList({
           const active = c.id === activeId;
           if (editing === c.id) {
             return (
-              <div key={c.id} className="flex items-center gap-1 rounded-lg bg-surface-2 px-2 py-1">
+              <div key={c.id} className="flex items-center gap-1 rounded bg-surface-2 px-2 py-1">
                 <input
                   autoFocus
                   value={draft}
@@ -71,8 +71,8 @@ export function ConversationList({
           return (
             <div
               key={c.id}
-              className={`group flex items-center rounded-lg text-sm transition ${
-                active ? "bg-accent-soft text-accent" : "text-fg hover:bg-surface-2"
+              className={`group flex items-center rounded text-sm transition ${
+                active ? "bg-surface-2 font-medium text-fg" : "text-fg hover:bg-surface-2"
               }`}
             >
               <button onClick={() => onSelect(c.id)} className="min-w-0 flex-1 truncate px-3 py-2 text-left">

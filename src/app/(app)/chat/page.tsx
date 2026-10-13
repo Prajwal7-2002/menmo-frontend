@@ -256,7 +256,7 @@ export default function ChatPage() {
                     <button
                       key={s}
                       onClick={() => send(s)}
-                      className="rounded-xl border border-border bg-surface px-4 py-3 text-left text-sm transition hover:border-accent/50 hover:bg-accent-soft"
+                      className="rounded-md border border-border bg-surface px-4 py-3 text-left text-sm transition hover:border-fg/30 hover:bg-surface-2"
                     >
                       {s}
                     </button>

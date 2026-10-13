@@ -38,8 +38,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             key={href}
             href={href}
             onClick={() => setMenuOpen(false)}
-            className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
-              active ? "bg-accent-soft font-medium text-accent" : "text-muted hover:bg-surface-2 hover:text-fg"
+            className={`flex items-center gap-3 rounded px-3 py-2 text-sm transition ${
+              active ? "bg-surface-2 font-medium text-fg" : "text-muted hover:bg-surface-2 hover:text-fg"
             }`}
           >
             <Icon className="size-4" />
@@ -56,7 +56,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             logout();
             router.replace("/login");
           }}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted transition hover:bg-surface-2 hover:text-fg"
+          className="flex w-full items-center gap-3 rounded px-3 py-2 text-sm text-muted transition hover:bg-surface-2 hover:text-fg"
         >
           <LogOut className="size-4" /> Log out
         </button>

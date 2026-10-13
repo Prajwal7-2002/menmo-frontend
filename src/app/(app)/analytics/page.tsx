@@ -6,7 +6,7 @@ import { ErrorBox, Spinner } from "@/components/ui";
 
 function Stat({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (
-    <div className="rounded-xl border border-border bg-surface p-4">
+    <div className="rounded-md border border-border bg-surface p-4">
       <p className="text-xs text-muted">{label}</p>
       <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
       {hint && <p className="mt-0.5 text-xs text-muted">{hint}</p>}
@@ -60,7 +60,7 @@ export default function AnalyticsPage() {
           ) : (
             <ul className="space-y-2">
               {data.top_queries.map((q) => (
-                <li key={q.query} className="rounded-lg border border-border bg-surface px-3 py-2">
+                <li key={q.query} className="rounded border border-border bg-surface px-3 py-2">
                   <div className="flex items-center gap-3 text-sm">
                     <span className="min-w-0 flex-1 truncate">{q.query}</span>
                     <span className="shrink-0 text-xs text-muted tabular-nums">×{q.count}</span>

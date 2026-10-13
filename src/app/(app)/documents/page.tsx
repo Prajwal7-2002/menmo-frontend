@@ -116,7 +116,7 @@ export default function DocumentsPage() {
         role="button"
         tabIndex={0}
         onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && inputRef.current?.click()}
-        className={`mt-6 flex cursor-pointer flex-col items-center rounded-2xl border-2 border-dashed px-6 py-10 text-center transition ${
+        className={`mt-6 flex cursor-pointer flex-col items-center rounded-md border-2 border-dashed px-6 py-10 text-center transition ${
           dragging ? "border-accent bg-accent-soft" : "border-border bg-surface hover:border-accent/50"
         }`}
       >
@@ -141,7 +141,7 @@ export default function DocumentsPage() {
       {uploads.length > 0 && (
         <ul className="mt-4 space-y-2">
           {uploads.map((u) => (
-            <li key={u.key} className="rounded-xl border border-border bg-surface px-4 py-3 text-sm">
+            <li key={u.key} className="rounded-md border border-border bg-surface px-4 py-3 text-sm">
               <div className="flex items-center gap-2">
                 {u.phase === "done" ? (
                   <Check className="size-4 text-ok" />
@@ -183,7 +183,7 @@ export default function DocumentsPage() {
           domains.map((d) => (
             <section key={d} className="mb-8">
               <h2 className="mb-2 text-xs font-semibold tracking-wider text-muted uppercase">{d.replace(/_/g, " ")}</h2>
-              <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface">
+              <ul className="divide-y divide-border overflow-hidden rounded-md border border-border bg-surface">
                 {docs[d].map((doc) => (
                   <li key={doc.id} className="flex items-center gap-3 px-4 py-3">
                     <FileText className="size-4 shrink-0 text-muted" />

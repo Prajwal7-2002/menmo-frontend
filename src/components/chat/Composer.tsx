@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Files, SendHorizontal, Sparkles } from "lucide-react";
+import { Files, SendHorizontal, SlidersHorizontal } from "lucide-react";
 import type { DocumentsByDomain } from "@/lib/api";
 import { Spinner } from "@/components/ui";
 
@@ -56,7 +56,7 @@ export function Composer({
   const pretty = (d: string) => d.replace(/_/g, " ");
 
   return (
-    <div className="rounded-2xl border border-border bg-surface shadow-sm focus-within:border-accent/60 focus-within:ring-2 focus-within:ring-accent/15">
+    <div className="rounded-md border border-border bg-surface focus-within:border-accent/60">
       <textarea
         ref={ref}
         rows={1}
@@ -98,7 +98,7 @@ export function Composer({
           </select>
         </label>
         <label className="inline-flex items-center gap-1 text-muted" title="Reply tone (Auto lets Menmo choose)">
-          <Sparkles className="size-3.5" />
+          <SlidersHorizontal className="size-3.5" />
           <select value={tone} onChange={(e) => onTone(e.target.value as Tone)} className={selectClass} aria-label="Tone">
             {TONES.map((t) => (
               <option key={t} value={t}>
@@ -110,7 +110,7 @@ export function Composer({
         <button
           onClick={onSend}
           disabled={!canSend}
-          className="ml-auto grid size-9 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-white transition disabled:opacity-40"
+          className="ml-auto grid size-9 place-items-center rounded bg-accent text-on-accent transition disabled:opacity-40"
           aria-label="Send"
         >
           {busy ? <Spinner /> : <SendHorizontal className="size-4" />}

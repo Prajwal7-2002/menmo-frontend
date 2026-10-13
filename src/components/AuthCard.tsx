@@ -22,7 +22,7 @@ export function AuthCard({ title, subtitle, children }: { title: string; subtitl
         <div className="mb-8 flex justify-center">
           <Logo size={34} />
         </div>
-        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+        <div className="rounded-md border border-border bg-surface p-6">
           <h1 className="text-xl font-semibold">{title}</h1>
           <p className="mt-1 mb-6 text-sm text-muted">{subtitle}</p>
           {children}
