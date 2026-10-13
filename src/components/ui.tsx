@@ -3,11 +3,14 @@ import { LoaderCircle } from "lucide-react";
 
 export function Logo({ size = 28 }: { size?: number }) {
   return (
-    <span
-      className="inline-flex items-baseline gap-1.5 font-semibold tracking-tight text-fg"
-      style={{ fontSize: size * 0.68 }}
-    >
-      <span aria-hidden className="inline-block size-[0.5em] translate-y-[-0.05em] bg-accent" />
+    <span className="inline-flex items-center gap-2 font-semibold tracking-tight text-fg">
+      <span
+        aria-hidden
+        className="grid place-items-center rounded-md bg-accent text-on-accent"
+        style={{ width: size, height: size, fontSize: size * 0.55 }}
+      >
+        M
+      </span>
       Menmo
     </span>
   );
