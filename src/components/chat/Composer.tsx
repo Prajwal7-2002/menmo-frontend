@@ -8,6 +8,9 @@ import { Spinner } from "@/components/ui";
 export const TONES = ["auto", "friendly", "formal", "concise", "empathetic", "playful"] as const;
 export type Tone = (typeof TONES)[number];
 
+/** Matches the backend's MAX_QUERY_CHARS. */
+export const MAX_MESSAGE_CHARS = 4000;
+
 /** "all" | "domain:<name>" | "doc:<id>" */
 export type Scope = string;
 
@@ -53,6 +56,7 @@ export function Composer({
 
   const domains = Object.keys(documents);
   const canSend = value.trim().length > 0 && !busy;
+  const nearLimit = value.length > MAX_MESSAGE_CHARS * 0.875;
   const pretty = (d: string) => d.replace(/_/g, " ");
 
   return (
@@ -69,8 +73,10 @@ export function Composer({
           }
         }}
         placeholder="Ask about your documents, or anything else…"
+        maxLength={MAX_MESSAGE_CHARS}
         className="block w-full resize-none bg-transparent px-4 pt-3 pb-1 text-fg outline-none placeholder:text-muted"
         aria-label="Message"
+        aria-describedby={nearLimit ? "message-count" : undefined}
       />
       <div className="flex items-center gap-1 px-2 pb-2">
         <label className="inline-flex items-center gap-1 text-muted" title="Which documents to search">
@@ -107,10 +113,19 @@ export function Composer({
             ))}
           </select>
         </label>
+        {nearLimit && (
+          <span
+            id="message-count"
+            aria-live="polite"
+            className={`ml-auto text-xs tabular-nums ${value.length >= MAX_MESSAGE_CHARS ? "text-danger" : "text-muted"}`}
+          >
+            {value.length.toLocaleString()} / {MAX_MESSAGE_CHARS.toLocaleString()}
+          </span>
+        )}
         <button
           onClick={onSend}
           disabled={!canSend}
-          className="ml-auto grid size-9 place-items-center rounded bg-accent text-on-accent transition disabled:opacity-40"
+          className={`${nearLimit ? "ml-2" : "ml-auto"} grid size-9 place-items-center rounded bg-accent text-on-accent transition disabled:opacity-40`}
           aria-label="Send"
         >
           {busy ? <Spinner /> : <SendHorizontal className="size-4" />}
